@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.openclassrooms.arista.R
 import com.openclassrooms.arista.domain.model.Exercise
+import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
@@ -26,7 +27,10 @@ class ExerciseAdapter(private val context: DeleteExerciseInterface) :
     override fun onBindViewHolder(holder: ExerciseViewHolder, position: Int) {
         val exercise = getItem(position)
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
-        val localDateTime = exercise.startTime.atZone(ZoneId.systemDefault()).toLocalDateTime()
+        val localDateTime = LocalDateTime.ofInstant(
+            exercise.startTime,
+            ZoneId.systemDefault()
+        )
         holder.tvStartTime.text = "Start Time: ${localDateTime.format(formatter)}"
         holder.tvDuration.text = "Duration: ${exercise.duration} minutes"
         holder.tvCategory.text = "Category: ${exercise.category}"

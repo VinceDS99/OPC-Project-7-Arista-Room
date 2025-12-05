@@ -111,9 +111,16 @@ class ExerciseFragment : Fragment(), DeleteExerciseInterface {
         val intensity = intensityStr.toInt()
         val category = (categorySpinner.selectedItem as ExerciseCategory).name // Convert enum -> String
 
+
+        // Récupérer l'userId du ViewModel
+        val userId = viewModel.currentUserId.value ?: run {
+            Toast.makeText(requireContext(), "User not found", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val newExercise = Exercise(
             id = null,
-            userId = 0L, // TODO: Remplacer par l'ID réel de l'utilisateur
+            userId = userId,
             startTime = Instant.now(),
             duration = duration,
             category = category,

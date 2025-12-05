@@ -73,7 +73,7 @@ abstract class AppDatabase : RoomDatabase() {
                     userId = userId,
                     startTime = LocalDateTime.now().minusDays(1).atZone(ZoneOffset.UTC).toInstant()
                         .toEpochMilli(),
-                    duration = 480,
+                    duration = 500,
                     quality = 4
                 )
             )

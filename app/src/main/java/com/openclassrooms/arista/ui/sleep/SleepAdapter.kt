@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.openclassrooms.arista.R
 import com.openclassrooms.arista.domain.model.Sleep
+import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
@@ -23,7 +24,10 @@ class SleepAdapter(private var sleeps: List<Sleep>) :
     override fun onBindViewHolder(holder: SleepViewHolder, position: Int) {
         val sleep: Sleep = sleeps[position]
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
-        val localDateTime = sleep.startTime.atZone(ZoneId.systemDefault()).toLocalDateTime()
+        val localDateTime = LocalDateTime.ofInstant(
+            sleep.startTime,
+            ZoneId.systemDefault()
+        )
         holder.tvStartTime.text = "Start Time: ${localDateTime.format(formatter)}"
         holder.tvDuration.text = "Duration: ${sleep.duration} minutes"
         holder.tvQuality.text = "Quality: ${sleep.quality}"

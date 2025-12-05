@@ -6,6 +6,7 @@ import com.openclassrooms.arista.domain.model.Exercise
 import com.openclassrooms.arista.domain.usecase.AddNewExerciseUseCase
 import com.openclassrooms.arista.domain.usecase.DeleteExerciseUseCase
 import com.openclassrooms.arista.domain.usecase.GetAllExercisesUseCase
+import com.openclassrooms.arista.domain.usecase.GetUserUsecase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,14 +19,26 @@ import javax.inject.Inject
 class ExerciseViewModel @Inject constructor(
     private val getAllExercisesUseCase: GetAllExercisesUseCase,
     private val addNewExerciseUseCase: AddNewExerciseUseCase,
-    private val deleteExerciseUseCase: DeleteExerciseUseCase
+    private val deleteExerciseUseCase: DeleteExerciseUseCase,
+    private val getUserUsecase: GetUserUsecase
 ) : ViewModel() {
 
     private val _exercisesFlow = MutableStateFlow<List<Exercise>>(emptyList())
     val exercisesFlow: StateFlow<List<Exercise>> = _exercisesFlow.asStateFlow()
 
+    private val _currentUserId = MutableStateFlow<Long?>(null)
+    val currentUserId: StateFlow<Long?> = _currentUserId.asStateFlow()
+
     init {
+        loadCurrentUser()
         loadAllExercises()
+    }
+
+    private fun loadCurrentUser() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val user = getUserUsecase.execute(1L) // ID 1L = utilisateur par défaut
+            _currentUserId.value = user?.id
+        }
     }
 
     private fun loadAllExercises() {
