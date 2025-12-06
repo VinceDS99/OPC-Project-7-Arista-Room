@@ -1,9 +1,8 @@
+package com.openclassrooms.arista
+
 import com.openclassrooms.arista.data.repository.ExerciseRepository
 import com.openclassrooms.arista.domain.model.Exercise
-import com.openclassrooms.arista.domain.model.ExerciseCategory
-import com.openclassrooms.arista.domain.model.User
 import com.openclassrooms.arista.domain.usecase.GetAllExercisesUseCase
-import com.openclassrooms.arista.domain.usecase.GetUserUsecase
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -18,14 +17,10 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 @RunWith(JUnit4::class)
-class ExampleUnitTest {
-
+class GetAllExercisesUseCaseTest {
 
     @Mock
     private lateinit var exerciseRepository: ExerciseRepository
-
-    @Mock
-    private lateinit var getUserUsecase: GetUserUsecase
 
     private lateinit var getAllExercisesUseCase: GetAllExercisesUseCase
 
@@ -43,26 +38,32 @@ class ExampleUnitTest {
     @Test
     fun `when repository returns exercises, use case should return them`() = runBlocking {
         // Arrange
-        val fakeExercise1: Exercise = Exercise(
-            startTime = Instant.now(),
-            duration = 30,
-            category = ExerciseCategory.Running,
-            intensity = 5
+        val fakeExercises = listOf(
+            Exercise(
+                id = 1L,
+                userId = 1L,
+                startTime = Instant.now(),
+                duration = 30,
+                category = "Running",
+                intensity = 5
+            ),
+            Exercise(
+                id = 2L,
+                userId = 1L,
+                startTime = Instant.now().plusSeconds(3600),
+                duration = 45,
+                category = "Riding",
+                intensity = 7
+            )
         )
-        val fakeExercise2: Exercise = Exercise(
-            startTime = Instant.now().plusSeconds(3600), // +1 heure
-            duration = 45,
-            category = ExerciseCategory.Riding,
-            intensity = 7
-        )
-        val fakeExercises: List<Exercise> = listOf(fakeExercise1, fakeExercise2)
         Mockito.`when`(exerciseRepository.getAllExercises()).thenReturn(fakeExercises)
 
         // Act
-        val result: List<Exercise> = getAllExercisesUseCase.execute()
+        val result = getAllExercisesUseCase.execute()
 
         // Assert
         assertEquals(fakeExercises, result)
+        assertEquals(2, result.size)
     }
 
     @Test
@@ -71,30 +72,9 @@ class ExampleUnitTest {
         Mockito.`when`(exerciseRepository.getAllExercises()).thenReturn(emptyList())
 
         // Act
-        val result: List<Exercise> = getAllExercisesUseCase.execute()
+        val result = getAllExercisesUseCase.execute()
 
         // Assert
         assertTrue(result.isEmpty())
     }
-
-    @Test
-    fun `when getUserUsecase called, should return user`() = runBlocking {
-        // Arrange
-        val fakeUser: User = User(
-            id = 1L,
-            name = "John Doe",
-            email = "john@example.com",
-            password = "secret"
-        )
-        val userId: Long = 1L
-        Mockito.`when`(getUserUsecase.execute(userId)).thenReturn(fakeUser)
-
-        // Act
-        val result: User? = getUserUsecase.execute(userId)
-
-        // Assert
-        assertEquals(fakeUser, result)
-    }
-
-
 }

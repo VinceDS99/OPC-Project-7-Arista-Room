@@ -21,6 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZoneId
 
 interface DeleteExerciseInterface {
     fun deleteExercise(exercise: Exercise?)
@@ -117,6 +118,17 @@ class ExerciseFragment : Fragment(), DeleteExerciseInterface {
             Toast.makeText(requireContext(), "User not found", Toast.LENGTH_SHORT).show()
             return
         }
+
+
+        // ✅ Ajoutez ces logs pour diagnostiquer
+        val now = Instant.now()
+        val localNow = LocalDateTime.ofInstant(now, ZoneId.systemDefault())
+
+        android.util.Log.d("ExerciseFragment", "=== DIAGNOSTIC HEURE ===")
+        android.util.Log.d("ExerciseFragment", "Instant.now() UTC = $now")
+        android.util.Log.d("ExerciseFragment", "Heure locale = $localNow")
+        android.util.Log.d("ExerciseFragment", "Fuseau horaire = ${ZoneId.systemDefault()}")
+
 
         val newExercise = Exercise(
             id = null,
